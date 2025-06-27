@@ -107,11 +107,12 @@ def run_inference(args):
     # Convert UNIX timestamp to pandas Timestamp
     df['timestamp'] = pd.to_datetime(df['timestamp'], unit='s')
     
-    # Prepare scaler (needed?)
-    scaler = StandardScaler()
-    # Fit scaler on all numeric columns except the timestamp (which is a pd.Timestamp object)
-    numeric_cols = df.select_dtypes(include=np.number).columns
-    scaler.fit(df[numeric_cols])
+    scaler = None
+    ## Prepare scaler (needed?)
+    # scaler = StandardScaler()
+    ## Fit scaler on all numeric columns except the timestamp (which is a pd.Timestamp object)
+    # numeric_cols = df.select_dtypes(include=np.number).columns
+    # scaler.fit(df[numeric_cols])
     
     # Load model
     model = load_model_for_inference(args.model_path, args, device)
@@ -248,6 +249,7 @@ def main():
         output_path=os.path.join(config['output_dir'], f"iar_{cli_args.model_id}.csv"),
         freq=freq,
         label_len=parsed_params['seq_len'] // 2,
+        task_name='short_term_forecast'
     )
 
     # Print configuration for verification

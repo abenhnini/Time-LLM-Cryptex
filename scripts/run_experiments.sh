@@ -1,13 +1,15 @@
 #!/bin/bash
 
 LLM_MODEL="LLAMA3.1"
-LLM_LAYERS=10
+LLM_LAYERS=8
 GRANULARITY="daily"
+LOSS="MSE"
+METRIC="MSE"
 TASK_NAME="short_term_forecast"
-FEATURE_SETS=("MS" "S")
-NUM_TOKENS_LIST=(100 500 1000)
-SEQ_LEN_LIST=(168 91 14)
-PRED_LEN_LIST=(1 7)
+FEATURE_SETS=("MS")
+NUM_TOKENS_LIST=(1000)
+SEQ_LEN_LIST=(7)
+PRED_LEN_LIST=(7)
 
 for feature in "${FEATURE_SETS[@]}"; do
   for num_tokens in "${NUM_TOKENS_LIST[@]}"; do
@@ -26,6 +28,8 @@ for feature in "${FEATURE_SETS[@]}"; do
           --llm_model "$LLM_MODEL" \
           --llm_layers "$LLM_LAYERS" \
           --granularity "$GRANULARITY" \
+          --loss "$LOSS" \
+          --metric "$METRIC" \
           --task_name "$TASK_NAME" \
           --features "$feature" \
           --seq_len "$seq_len" \

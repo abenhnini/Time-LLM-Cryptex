@@ -1,0 +1,11 @@
+time python launch_experiment.py \
+  --llm_model DEEPSEEK \
+  --llm_layers 2 \
+  --granularity daily \
+  --task_name short_term_forecast \
+  --features MS \
+  --seq_len 6 \
+  --pred_len 1 \
+  --patch_len 1 \
+  --stride 1 \
+  --auto_confirm

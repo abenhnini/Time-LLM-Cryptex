@@ -165,7 +165,8 @@ def launch_experiment(args):
         '--models_dir', static_config['models_dir'],
         '--num_tokens', str(args.num_tokens),
         '--llm_dim', str(args.llm_dim),
-        '--results_csv', static_config['results_csv']
+        '--loss', str(args.loss),
+        '--metric', str(args.metric),
     ]
     
     
@@ -300,7 +301,9 @@ def main():
                        help='Stride (for short_term_forecast)')
     parser.add_argument('--auto_confirm', action='store_true',
                        help='Skip confirmation prompt and run immediately')
-    
+    parser.add_argument('--loss', type=str, default='MSE', help='loss fuction for training')
+    parser.add_argument('--metric', type=str, default='MAE', help='metric for evaluation')
+
     args = parser.parse_args()
     
     # Set default label_len if not provided
