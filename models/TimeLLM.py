@@ -29,13 +29,13 @@ class FlattenHead(nn.Module):
 
 class Model(nn.Module):
 
-    def __init__(self, configs, patch_len=16, stride=8):
+    def __init__(self, configs, top_k=5, patch_len=16, stride=8):
         super(Model, self).__init__()
         self.task_name = configs.task_name
         self.pred_len = configs.pred_len
         self.seq_len = configs.seq_len
         self.d_ff = configs.d_ff
-        self.top_k = 5
+        self.top_k = top_k
         self.d_llm = configs.llm_dim
         self.patch_len = configs.patch_len
         self.stride = configs.stride

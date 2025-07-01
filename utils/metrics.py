@@ -16,6 +16,8 @@ def get_loss_function(loss_name):
         return MADLLoss()
     elif loss_name == 'GMADL':
         return GMADLLoss()
+    elif loss_name == 'DLF':
+        return DLFLoss()
     else:
         raise ValueError(f"Unsupported loss type: {loss_name}")
 
@@ -180,6 +182,32 @@ class GMADLLoss(nn.Module):
         # Mean over all elements
         return loss.mean()
 
+class DLFLoss(nn.Module):
+    """
+    Directional Loss Function (DLF)
+    """
+    def __init__(self, alpha=1.0):
+        super().__init__()
+        self.alpha = alpha  # Can tune if needed
+
+    def forward(self, pred: torch.Tensor, true: torch.Tensor) -> torch.Tensor:
+        if pred.shape != true.shape:
+            raise ValueError(f"Shape mismatch: pred {pred.shape}, true {true.shape}")
+
+        # Element-wise error
+        error = pred - true
+
+        # Direction agreement: same sign means correct direction
+        same_sign = torch.sign(pred) == torch.sign(true)
+
+        # Linear penalty if same direction, otherwise - quadratic
+        linear_loss = torch.abs(error)
+        quadratic_loss = error ** 2
+
+        # Applying the directional penalty
+        loss = torch.where(same_sign, linear_loss, self.alpha * quadratic_loss)
+
+        return loss.mean()
 
 def metric(pred, true):
     mae = MAE(pred, true)

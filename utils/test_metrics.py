@@ -1,5 +1,5 @@
 import torch
-from metrics import MDAMetric, SharpeRatioMetric, GMADLLoss, MADLLoss
+from metrics import MDAMetric, SharpeRatioMetric, GMADLLoss, MADLLoss, DLFLoss
 
 # Closer to 1 is better in MDA
 mda_fn = MDAMetric()
@@ -84,3 +84,21 @@ pred_returns = torch.tensor([[0.01, 0.02, -0.01]])
 true_returns = torch.tensor([[0.01, -0.02, -0.01]])
 loss = madl_fn(pred_returns, true_returns)
 print(f"MADL: {loss.item()}")
+
+print("\n--- DLF TESTS ---")
+dlf_fn = DLFLoss(alpha=2.0)
+
+# Same direction — linear penalty
+pred = torch.tensor([[0.2, 0.4]])
+true = torch.tensor([[0.1, 0.3]])
+print(f"DLF (same sign): {dlf_fn(pred, true).item()}")
+
+# Opposite direction — quadratic penalty
+pred = torch.tensor([[0.2, -0.4]])
+true = torch.tensor([[-0.1, 0.3]])
+print(f"DLF (opposite sign): {dlf_fn(pred, true).item()}")
+
+# Mixed
+pred = torch.tensor([[0.1, -0.2, 0.3]])
+true = torch.tensor([[0.2, -0.1, -0.3]])
+print(f"DLF (mixed): {dlf_fn(pred, true).item()}")

@@ -308,6 +308,8 @@ def main():
                        help='loss fuction for training')
     parser.add_argument('--metric', type=str, default='MAE', 
                        help='metric for evaluation')
+    parser.add_argument("--top_k", type=int, default=5,
+                        help="Number of top autocorrelated lags to use with the default of 5")
     
     args = parser.parse_args()
     
