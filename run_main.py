@@ -112,7 +112,7 @@ def main():
 
     # Initialize Accelerator
     ddp_kwargs = DistributedDataParallelKwargs(find_unused_parameters=True)
-    deepspeed_plugin = DeepSpeedPlugin(hf_ds_config='./config/ds_config_zero2.json')
+    deepspeed_plugin = DeepSpeedPlugin(hf_ds_config='./ds_config_zero2.json')
     accelerator = Accelerator(kwargs_handlers=[ddp_kwargs], deepspeed_plugin=deepspeed_plugin)
 
     # --- MLflow Integration ---    

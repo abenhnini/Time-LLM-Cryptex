@@ -1,4 +1,4 @@
-# docker-compose.yml config for running a PostgreSQL and MinIO stack.
+# docker-compose.yml config for running an MLflow, PostgreSQL and MinIO stack.
 version: '3.8'
 services:
   postgres:
@@ -25,6 +25,29 @@ services:
       - "9001:9001"
     volumes:
       - minio_data:/data
+
+  mlflow:
+    container_name: mlflow
+    build:
+      context: .         # looks for Dockerfile in current directory
+    image: my-mlflow
+    depends_on:
+      - postgres
+      - minio
+    ports:
+      - "5000:5000"
+    environment:
+      BACKEND_STORE_URI: postgresql://mlflow:mlflowpass@postgres:5432/mlflow
+      ARTIFACT_ROOT: s3://mlflow/
+      AWS_ACCESS_KEY_ID: minioadmin
+      AWS_SECRET_ACCESS_KEY: minioadmin
+      MLFLOW_S3_ENDPOINT_URL: http://minio:9000
+    command: >
+      mlflow server 
+        --backend-store-uri=postgresql://mlflow:mlflowpass@postgres:5432/mlflow 
+        --default-artifact-root=s3://mlflow/ 
+        --host 0.0.0.0 
+        --port 5000
 
 volumes:
   pg_data:
