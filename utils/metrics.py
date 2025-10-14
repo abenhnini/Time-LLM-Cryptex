@@ -131,12 +131,16 @@ class GMADLLoss(nn.Module):
         """
         pred, true: [batch, seq_len] or [batch, seq_len, 1] (predicted and true returns)
         """
+
+        assert torch.isfinite(pred).all(), "NaN or Inf in model output"
+        assert torch.isfinite(true).all(), "NaN or Inf in labels"
+
         # ensure same shape
         if pred.shape != true.shape:
             raise ValueError(f"Shape mismatch: pred {pred.shape}, true {true.shape}")
 
         # The paper uses a=1000 and b=1:5
-        product = self.a * true * pred  # element-wise Ri * R̂i
+        product = torch.clamp(self.a * true * pred, min=-50, max=50) # element-wise Ri * R̂i, clamp to prevent overflow
 
         sigmoid_term = 1.0 / (1.0 + torch.exp(-product))  # 1 / (1 + exp(-a Ri R̂i))
 
